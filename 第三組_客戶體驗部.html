@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快送 GO 客戶體驗部 - 顧問建議報告</title>
+    <!-- 引入高質感字型與圖標 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
+                    },
+                    colors: {
+                        slate: { 950: '#0b0f19', 900: '#0f172a', 600: '#475569', 100: '#f1f5f9' },
+                        brand: { blue: '#2563eb', accent: '#1e40af', light: '#eff6ff' }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'spin-slow': 'spin 12s linear infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0b0f19;
+            overflow: hidden;
+            user-select: none;
+            /* 提升全局基礎字型渲染平滑度 */
+            -webkit-font-smoothing: antialiased;
+        }
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .slide {
+            display: none;
+            width: 1440px;
+            height: 810px;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8);
+            padding: 60px 80px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            overflow: hidden;
+        }
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+        }
+        /* 極簡精緻點狀網格背景 */
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            opacity: 0.3;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .slide > * { position: relative; z-index: 10; }
+        
+        /* 動態進場動畫延遲效果 */
+        .active .stagger-1 { animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        .active .stagger-2 { animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards; opacity: 0; }
+        .active .stagger-3 { animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards; opacity: 0; }
+        .active .stagger-4 { animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards; opacity: 0; }
+        
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 控制面板毛玻璃效果 */
+        .control-panel {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 15px 35px -5px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+
+<div class="presentation-container">
+    <div class="absolute top-0 left-0 right-0 h-2 bg-slate-900/30 z-50">
+        <div id="global-progress" class="h-full bg-brand-blue transition-all duration-300 ease-out" style="width: 0.6%"></div>
+    </div>
+
+    <!-- Slide 1: 封面 -->
+    <div class="slide justify-between active" id="slide-1">
+        <div class="flex justify-between items-center w-full stagger-1">
+            <span class="text-lg font-bold tracking-widest text-brand-blue uppercase bg-brand-light px-5 py-2.5 rounded-full border border-blue-100">
+                <i class="fa-solid fa-rocket mr-2"></i> 快送 GO 數據決策成果彙報
+            </span>
+            <span class="text-lg font-bold text-slate-600 bg-slate-100 px-5 py-2.5 rounded-full">
+                <i class="fa-solid fa-user-group mr-2"></i> 客戶體驗部
+            </span>
+        </div>
+        <div class="my-auto space-y-8 text-left stagger-2">
+            <div class="inline-block h-2.5 w-24 bg-brand-blue rounded-full mb-2"></div>
+            <h1 class="text-7xl font-black text-slate-900 tracking-tight leading-tight">
+                快送 GO 顧問建議報告
+            </h1>
+            <p class="text-3xl text-slate-600 max-w-4xl font-medium leading-relaxed">
+                數據與溫度並存：打造以客群為導向的精準推薦系統
+            </p>
+            <div class="flex items-center gap-4 pt-4">
+                <span class="text-base font-bold text-slate-400">研發代碼來源</span>
+                <span class="text-base font-bold bg-slate-100 text-slate-700 px-4 py-2 rounded-lg border border-slate-200">
+                    <i class="fa-brands fa-python text-yellow-600 mr-2 text-xl"></i> 08_學生_Notebook_Starter.ipynb
+                </span>
+            </div>
+        </div>
+        <div class="flex justify-between items-end border-t-2 border-slate-100 pt-6 stagger-3">
+            <div>
+                <p class="text-sm text-slate-400 font-bold uppercase tracking-widest mb-2">專業簡報團隊</p>
+                <p class="text-xl font-black text-slate-800">高二光班 ｜ 第 3 組</p>
+                <p class="text-lg text-slate-600 mt-2 font-medium">
+                    05 李華錚 ｜ 09 易璴攸 ｜ 20 陳瑋珽 ｜ 31 蔡睿琦
+                </p>
+            </div>
+            <div class="text-right">
+                <p class="text-sm text-slate-400 font-bold uppercase tracking-widest mb-2">核心研究主題</p>
+                <span class="text-xl font-bold text-brand-blue bg-blue-50 px-4 py-2.5 rounded-xl border border-blue-100">
+                    <i class="fa-solid fa-network-wired mr-2"></i> 相似推薦與潛在關聯發掘
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 2: CEO 核心經營痛點 -->
+    <div class="slide justify-between" id="slide-2">
+        <div class="flex justify-between items-center w-full border-b-2 border-slate-100 pb-5 stagger-1">
+            <h3 class="text-2xl font-black text-slate-600 uppercase tracking-wider"><i class="fa-solid fa-headset text-brand-blue mr-3"></i>CEO 核心經營痛點</h3>
+            <span class="text-lg text-slate-400 font-bold">Slide 02 / 14</span>
+        </div>
+        <div class="my-auto flex flex-col items-center text-center space-y-10 px-12 stagger-2">
+            <div class="bg-blue-50 text-brand-blue w-24 h-24 rounded-3xl flex items-center justify-center text-5xl shadow-inner border border-blue-100 animate-pulse-slow">
+                <i class="fa-solid fa-lightbulb"></i>
+            </div>
+            <h2 class="text-5xl font-extrabold text-slate-900 leading-snug max-w-5xl">
+                「如何打破只推銷 <span class="text-brand-blue underline decoration-wavy decoration-4 decoration-offset-8">Best-Seller</span> 的現狀，為不同客戶提供精準的推薦，並評估成效？」
+            </h2>
+            <div class="w-24 h-2 bg-slate-200 rounded-full"></div>
+            <p class="text-slate-600 max-w-4xl text-2xl font-medium leading-relaxed">
+                平台不應只是冰冷的熱銷廣告牆，而是要像貼心的個人美食顧問。<br>
+                <span class="text-brand-blue font-bold">客戶體驗部</span> 旨在用數據發掘長尾價值，破除資訊繭房。
+            </p>
+        </div>
+        <div class="border-t-2 border-slate-100 pt-5 flex justify-between text-base font-bold text-slate-400 stagger-3">
+            <span>目標：改善客戶流失、提高黏著度</span>
+            <span>手段：打破資訊繭房、創造長尾價值</span>
+        </div>
+    </div>
+
+    <!-- Slide 3: 現有系統的三大致命傷 -->
+    <div class="slide justify-between" id="slide-3">
+        <div class="flex justify-between items-center w-full border-b-2 border-slate-100 pb-5 stagger-1">
+            <h3 class="text-2xl font-black text-slate-600 uppercase tracking-wider"><i class="fa-solid fa-magnifying-glass-chart text-red-500 mr-3"></i>現有推薦系統的三大致命傷</h3>
+            <span class="text-lg text-slate-400 font-bold">Slide 03 / 14</span>
+        </div>
+        <div class="grid grid-cols-12 gap-10 my-auto items-center">
+            <!-- 左側分析文字 -->
+            <div class="col-span-5 space-y-6 stagger-2">
+                <span class="px-4 py-2 text-sm font-bold text-red-600 bg-red-50 rounded-lg border border-red-200">
+                    Current System Blind Spots
+                </span>
+                <h4 class="text-4xl font-black text-slate-900 leading-tight">被困在「熱銷」與<br>「過往」的資訊繭房</h4>
+                <p class="text-xl text-slate-600 leading-relaxed font-medium">
+                    在分析使用者行為與點擊流數據後，我們發現傳統「基於全站銷量」與「歷史最高頻」的推薦邏輯，正嚴重損害客戶體驗：
+                </p>
+                <div class="space-y-4">
+                    <div class="bg-white border border-slate-200 p-4 rounded-2xl flex items-start gap-4 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="mt-1 w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-rotate"></i></div>
+                        <div>
+                            <h5 class="font-bold text-slate-800 text-lg">推薦疲勞 (Fatigue)</h5>
+                            <p class="text-slate-600 font-medium">永遠只推銷用戶點過的單一品項（如：每天都推漢堡），導致視覺麻木與轉換率下降。</p>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 p-4 rounded-2xl flex items-start gap-4 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="mt-1 w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                        <div>
+                            <h5 class="font-bold text-slate-800 text-lg">缺乏場景感知 (Context Blind)</h5>
+                            <p class="text-slate-600 font-medium">無法辨識「平日午餐趕時間」與「週末晚餐想聚餐」的場景差異，推錯餐點類型。</p>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 p-4 rounded-2xl flex items-start gap-4 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="mt-1 w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-store-slash"></i></div>
+                        <div>
+                            <h5 class="font-bold text-slate-800 text-lg">長尾隱沒 (Long-tail Ignored)</h5>
+                            <p class="text-slate-600 font-medium">高達 70% 的優質潛力小店無法獲得曝光，平台營收過度依賴少數頭部連鎖餐廳。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 右側視覺化 SVG 圖表 -->
+            <div class="col-span-7 bg-slate-50/90 rounded-3xl border border-slate-200 p-8 shadow-sm flex flex-col justify-center items-center h-[520px] stagger-3">
+                <p class="text-sm font-bold text-slate-500 mb-6 uppercase tracking-widest">The Filter Bubble Effect</p>
+                <svg width="100%" height="380" viewBox="0 0 600 380" class="overflow-visible font-sans">
+                    <defs>
+                        <marker id="cross" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                            <line x1="2" y1="2" x2="8" y2="8" stroke="#ef4444" stroke-width="2"/>
+                            <line x1="8" y1="2" x2="2" y2="8" stroke="#ef4444" stroke-width="2"/>
+                        </marker>
+                        <!-- 網格背景 -->
+                        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e2e8f0" stroke-width="0.5"/>
+                        </pattern>
+                    </defs>
+                    <rect width="600" height="380" fill="url(#grid)" rx="20"/>
+
+                    <!-- 外圍多樣化選項 (被阻擋) -->
+                    <g class="animate-pulse" style="animation-duration: 3s;">
+                        <!-- 沙拉 -->
+                        <circle cx="120" cy="80" r="35" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4,4"/>
+                        <text x="120" y="90" font-size="28" text-anchor="middle">🥗</text>
+                        <!-- 壽司 -->
+                        <circle cx="480" cy="90" r="35" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4,4"/>
+                        <text x="480" y="100" font-size="28" text-anchor="middle">🍣</text>
+                        <!-- 咖啡 -->
+                        <circle cx="100" cy="280" r="35" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4,4"/>
+                        <text x="100" y="290" font-size="28" text-anchor="middle">☕</text>
+                        <!-- 麵食 -->
+                        <circle cx="500" cy="300" r="35" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4,4"/>
+                        <text x="500" y="310" font-size="28" text-anchor="middle">🍜</text>
+                    </g>
+
+                    <!-- 被阻擋的箭頭 -->
+                    <path d="M 160 110 L 220 150" fill="none" stroke="#ef4444" stroke-width="3" stroke-dasharray="6,4" marker-end="url(#cross)"/>
+                    <path d="M 440 120 L 380 150" fill="none" stroke="#ef4444" stroke-width="3" stroke-dasharray="6,4" marker-end="url(#cross)"/>
+                    <path d="M 140 260 L 210 220" fill="none" stroke="#ef4444" stroke-width="3" stroke-dasharray="6,4" marker-end="url(#cross)"/>
+                    <path d="M 460 280 L 390 230" fill="none" stroke="#ef4444" stroke-width="3" stroke-dasharray="6,4" marker-end="url(#cross)"/>
+
+                    <!-- 資訊繭房 Filter Bubble -->
+                    <circle cx="300" cy="190" r="130" fill="#eff6ff" stroke="#3b82f6" stroke-width="4" opacity="0.85"/>
+                    <text x="300" y="50" font-size="14" fill="#3b82f6" font-weight="bold" text-anchor="middle" class="bg-white px-2">單一推薦同溫層</text>
+                    
+                    <!-- 鎖頭 Icon -->
+                    <rect x="288" y="25" width="24" height="18" rx="3" fill="#2563eb"/>
+                    <path d="M 294 25 V 17 A 6 6 0 0 1 306 17 V 25" fill="none" stroke="#2563eb" stroke-width="3"/>
+
+                    <!-- 用戶 -->
+                    <circle cx="300" cy="200" r="35" fill="#1e40af"/>
+                    <!-- 疲憊的表情 -->
+                    <path d="M 288 190 Q 292 185 296 190" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M 304 190 Q 308 185 312 190" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="292" y1="210" x2="308" y2="210" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                    
+                    <!-- 繭房內重複的推薦 (永遠都是炸物速食) -->
+                    <g transform="translate(200, 100)">
+                        <circle cx="25" cy="25" r="22" fill="#ffffff" stroke="#bfdbfe" stroke-width="2"/>
+                        <text x="25" y="33" font-size="20" text-anchor="middle">🍔</text>
+                    </g>
+                    <g transform="translate(350, 110)">
+                        <circle cx="25" cy="25" r="22" fill="#ffffff" stroke="#bfdbfe" stroke-width="2"/>
+                        <text x="25" y="33" font-size="20" text-anchor="middle">🍟</text>
+                    </g>
+                    <g transform="translate(285, 270)">
+                        <circle cx="25" cy="25" r="22" fill="#ffffff" stroke="#bfdbfe" stroke-width="2"/>
+                        <text x="25" y="33" font-size="20" text-anchor="middle">🍔</text>
+                    </g>
+                    
+                    <!-- 繭房內循環箭頭 -->
+                    <path d="M 260 120 Q 300 90 340 120" fill="none" stroke="#93c5fd" stroke-width="2" stroke-dasharray="4,4"/>
+                    <path d="M 360 160 Q 380 230 320 280" fill="none" stroke="#93c5fd" stroke-width="2" stroke-dasharray="4,4"/>
+                    <path d="M 280 280 Q 220 230 240 160" fill="none" stroke="#93c5fd" stroke-width="2" stroke-dasharray="4,4"/>
+                </svg>
+            </div>
+        </div>
+        <div class="border-t-2 border-slate-100 pt-5 flex justify-between text-base font-bold text-slate-400 stagger-4">
+            <span>分析基底：使用者點擊流日誌 (Log Data) 與客戶反饋</span>
+            <span>結論：急需引入演算法打破同溫層，精準推送長尾選項</span>
+        </div>
+    </div>
+
+    <!-- Slide 4: 商業問題與衡量指標拆解 -->
+    <div class="slide justify-between" id="slide-4">
+        <div class="flex justify-between items-center w-full border-b-2 border-slate-100 pb-5 stagger-1">
+            <h3 class="text-2xl font-black text-slate-600 uppercase tracking-wider"><i class="fa-solid fa-chart-line text-brand-blue mr-3"></i>商業問題與衡量指標拆解</h3>
+            <span class="text-lg text-slate-400 font-bold">Slide 04 / 14</span>
+        </div>
+        <div class="my-auto space-y-8 stagger-2">
+            <p class="text-2xl text-slate-700 font-medium">我們將龐大的經營痛點，科學地具體化拆解為三個可以透過 Notebook 數據量測的子問題：</p>
+            <div class="overflow-hidden border-2 border-slate-200 rounded-2xl shadow-sm">
+                <table class="min-w-full divide-y-2 divide-slate-200 bg-white text-left">
+                    <thead class="bg-slate-100">
+                        <tr>
+                            <th class="px-8 py-6 text-lg font-black text-slate-900 uppercase">#</th>
+                            <th class="px-8 py-6 text-lg font-black text-slate-900 uppercase w-2/5">核心子問題 (Sub-problem)</th>
+                            <th class="px-8 py-6 text-lg font-black text-slate-900 uppercase">量化指標 (Metric)</th>
+                            <th class="px-8 py-6 text-lg font-black text-slate-900 uppercase">Notebook 單元</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y-2 divide-slate-100 text-slate-700 text-xl font-medium">
+                        <tr class="hover:bg-blue-50/30 transition-all">
+                            <td class="px-8 py-6 font-black text-brand-blue text-2xl">01</td>
+                            <td class="px-8 py-6 font-bold text-slate-900">面對不同客群，該精準推薦哪類餐廳？</td>
+                            <td class="px-8 py-6 text-slate-600">推薦特徵與 Profile 匹配度</td>
+                            <td class="px-8 py-6 bg-blue-50/50 font-bold text-brand-blue">Cell 7 & 9</td>
+                        </tr>
+                        <tr class="hover:bg-blue-50/30 transition-all">
+                            <td class="px-8 py-6 font-black text-brand-blue text-2xl">02</td>
+                            <td class="px-8 py-6 font-bold text-slate-900">純依賴過往叫餐行為是否會落入盲點？</td>
+                            <td class="px-8 py-6 text-slate-600">提升度 (Lift) & 置信度</td>
+                            <td class="px-8 py-6 bg-blue-50/50 font-bold text-brand-blue">Cell 10</td>
+                        </tr>
+                        <tr class="hover:bg-blue-50/30 transition-all">
+                            <td class="px-8 py-6 font-black text-brand-blue text-2xl">03</td>
+                            <td class="px-8 py-6 font-bold text-slate-900">如何科學評估推薦？是否陷入資訊繭房？</td>
+                            <td class="px-8 py-6 text-slate-600">準確率 (Precision@5) & 覆蓋率</td>
+                            <td class="px-8 py-6 bg-blue-50/50 font-bold text-brand-blue">Cell 13 & 14</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="border-t-2 border-slate-100 pt-5 flex justify-between text-base font-bold text-slate-400 stagger-3">
+            <span>數據科學框架：定義商業指標 ｜ 拒絕主觀臆測</span>
+            <span>參考對應：03_PDF報告 (3).docx 第 1.2 節</span>
+        </div>
+    </div>
+
+    <!-- Slide 5: 三大演算法引擎 Blueprint -->
+    <div class="slide justify-between" id="slide-5">
+        <div class="flex justify-between items-center w-full border-b-2 border-slate-100 pb-5 stagger-1">
+            <h3 class="text-2xl font-black text-slate-600 uppercase tracking-wider"><i class="fa-solid fa-gears text-brand-blue mr-3"></i>個人化推薦的三大演算法引擎</h3>
+            <span class="text-lg text-slate-400 font-bold">Slide 05 / 14</span>
+        </div>
+        <div class="grid grid-cols-3 gap-8 my-auto stagger-2">
+            <!-- 引擎 1 -->
+            <button onclick="switchEngineDetail(0)" id="engine-card-0" class="border-4 border-brand-blue/30 rounded-3xl p-8 bg-blue-50/30 flex flex-col justify-between h-[360px] text-left transition-all hover:-translate-y-2 shadow-sm cursor-pointer">
+                <div class="space-y-5">
+                    <div class="w-16 h-16 rounded-2xl bg-blue-100 text-brand-blue flex items-center justify-center text-3xl shadow-sm">
+                        <i class="fa-solid fa-users-viewfinder"></i>
+                    </div>
+                    <h4 class="text-2xl font-black text-slate-900">客戶聚類 K-Means</h4>
+                    <p class="text-lg text-slate-600 leading-relaxed font-medium">
+                        <strong>「先懂人，再推餐。」</strong><br>
+                        拒絕無差別對待，將客戶精細拆解出 Archetype，打下精準推薦底座。
+                    </p>
+                </div>
+                <div class="pt-4 border-t-2 border-slate-200/50 flex justify-between items-center text-base w-full">
+                    <span class="font-bold text-slate-500 bg-white px-3 py-1 rounded-lg">Cell 7</span>
+                    <span class="font-black text-brand-blue text-lg">精細分群 ➔</span>
+                </div>
+            </button>
+            <!-- 引擎 2 -->
+            <button onclick="switchEngineDetail(1)" id="engine-card-1" class="border-2 border-slate-100 rounded-3xl p-8 bg-slate-50/50 flex flex-col justify-between h-[360px] text-left transition-all hover:-translate-y-2 shadow-sm cursor-pointer">
+                <div class="space-y-5">
+                    <div class="w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-3xl shadow-sm">
+                        <i class="fa-solid fa-compass"></i>
+                    </div>
+                    <h4 class="text-2xl font-black text-slate-900">相似推薦 Cosine</h4>
+                    <p class="text-lg text-slate-600 leading-relaxed font-medium">
+                        <strong>「投其偏好，秒速回應。」</strong><br>
+                        依據菜系、地區、均價等多維特徵，在百毫秒內計算餘弦夾角匹配餐廳。
+                    </p>
+                </div>
+                <div class="pt-4 border-t-2 border-slate-200/50 flex justify-between items-center text-base w-full">
+                    <span class="font-bold text-slate-500 bg-white px-3 py-1 rounded-lg">Cell 9</span>
+                    <span class="font-black text-emerald-600 text-lg">特徵匹配 ➔</span>
+                </div>
+            </button>
+            <!-- 引擎 3 -->
+            <button onclick="switchEngineDetail(2)" id="engine-card-2" class="border-2 border-slate-100 rounded-3xl p-8 bg-slate-50/50 flex flex-col justify-between h-[360px] text-left transition-all hover:-translate-y-2 shadow-sm cursor-pointer">
+                <div class="space-y-5">
+                    <div class="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-3xl shadow-sm">
+                        <i class="fa-solid fa-shuffle"></i>
+                    </div>
+                    <h4 class="text-2xl font-black text-slate-900">關聯分析 Apriori</h4>
+                    <p class="text-lg text-slate-600 leading-relaxed font-medium">
+                        <strong>「打破繭房，驚喜推薦。」</strong><br>
+                        挖掘「點 A 的人也買 B」的隱藏關聯。利用跨界搭配打破資訊泡泡。
+                    </p>
+                </div>
+                <div class="pt-4 border-t-2 border-slate-200/50 flex justify-between items-center text-base w-full">
+                    <span class="font-bold text-slate-500 bg-white px-3 py-1 rounded-lg">Cell 10</span>
+                    <span class="font-black text-amber-600 text-lg">規則挖掘 ➔</span>
+                </div>
+            </button>
+        </div>
+        <div class="bg-blue-50 border-2 border-blue-100 p-5 rounded-2xl text-lg stagger-3 flex items-center justify-between">
+            <span class="text-slate-700 font-bold"><i class="fa-solid fa-circle-info text-brand-blue mr-2 text-xl"></i> <strong>運作解讀：</strong><span id="engine-detail-title" class="text-brand-blue mx-2">客戶聚類 K-Means</span> ➔ <span id="engine-detail-desc" class="text-slate-600 font-medium">透過標準化與距離度量，識別黃金與小資客群，建立基礎標籤。</span></span>
+            <span class="text-sm bg-white border border-blue-200 px-4 py-2 rounded-xl font-bold text-brand-blue shadow-sm animate-pulse">點擊卡片切換</span>
+        </div>
+    </div>
+
+    <!-- Slide 6: 洞察一 - 解構真實客群樣貌 (K-Means 評估) -->
+    <div class="slide justify-between" id="slide-6">
+        <div class="flex justify-between items-center w-full border-b-2 border-slate-100 pb-5 stagger-1">
+            <h3 class="text-2xl font-black text-slate-600 uppercase tracking-wider"><i class="fa-solid fa-users text-brand-blue mr-3"></i>洞察一：解構真實客群樣貌 (K-Means)</h3>
+            <span class="text-lg text-slate-400 font-bold">Slide 06 / 14</span>
+        </div>
+        <div class="grid grid-cols-12 gap-10 my-auto items-center">
+            <!-- 文字解說 -->
+            <div class="col-span-5 space-y-6 stagger-2">
+                <div class="inline-flex items-center gap-2 bg-blue-50 text-brand-blue px-4 py-2 rounded-lg text-sm font-black border border-blue-100">
+                    <i class="fa-solid fa-calculator"></i> Elbow Method & Silhouette Score
+                </div>
+                <h4 class="text-4xl font-black text-slate-900 tracking-tight leading-snug">排除雜訊，精確鎖定三大客群</h4>
+                <p class="text-xl text-slate-600 leading-relaxed font-medium">
+                    使用手肘法與輪廓分析，最終決定採用 <strong>K=3</strong> 進行客群切分。並手動過濾了 2% 缺乏行銷規模的極端異常值：
+                </p>
+                <div class="space-y-4 text-xl text-slate-700 bg-slate-50 p-6 rounded-2xl">
+                    <p class="flex items-center gap-3"><span class="w-3 h-3 rounded-full bg-blue-600"></span><strong>群體 0 (金主中產)：</strong>高頻、高客單價主力。</p>
+                    <p class="flex items-center gap-3"><span class="w-3 h-3 rounded-full bg-emerald-500"></span><strong>群體 1 (穩健過渡)：</strong>中齡中產，消費平穩。</p>
+                    <p class="flex items-center gap-3"><span class="w-3 h-3 rounded-full bg-amber-500"></span><strong>群體 2 (潛力小資)：</strong>年輕低頻，成長空間大。</p>
+                </div>
+            </div>
+            <!-- 右側實時 SVG 圖表放大版 -->
+            <div class="col-span-7 bg-slate-50/80 p-8 rounded-3xl border-2 border-slate-100 flex flex-col items-center stagger-3 shadow-inner">
+                <p class="text-base font-bold text-slate-600 mb-6">Cleaned Data K-Means Evaluation (Notebook Cell 7)</p>
+                <svg width="680" height="320" viewBox="0 0 480 200" class="overflow-visible font-sans">
+                    <!-- 背景網格 -->
+                    <line x1="50" y1="20" x2="430" y2="20" stroke="#cbd5e1" stroke-width="1" />
+                    <line x1="50" y1="60" x2="430" y2="60" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,4" />
+                    <line x1="50" y1="100" x2="430" y2="100" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,4" />
+                    <line x1="50" y1="140" x2="430" y2="140" stroke="#cbd5e1" stroke-width="1" />
+                    <!-- 坐標軸 -->
+                    <line x1="50" y1="20" x2="50" y2="150" stroke="#94a3b8" stroke-width="2" />
+                    <line x1="430" y1="20" x2="430" y2="150" stroke="#94a3b8" stroke-width="2" />
+                    <line x1="50" y1="150" x2="430" y2="150" stroke="#94a3b8" stroke-width="2" />
+                    
+                    <!-- WCSS (藍) -->
+                    <polyline points="50,20 176,60 303,90 430,110" fill="none" stroke="#2563eb" stroke-width="4" />
+                    <rect x="44" y="14" width="12" height="12" fill="#2563eb" />
+                    <rect x="170" y="54" width="12" height="12" fill="#2563eb" />
+                    <rect x="297" y="84" width="12" height="12" fill="#2563eb" />
+                    <rect x="424" y="104" width="12" height="12" fill="#2563eb" />
+                    
+                    <!-- Silhouette (紅) -->
+                    <polyline points="50,20 176,115 303,125 430,110" fill="none" stroke="#ef4444" stroke-width="4" />
+                    <circle cx="50" cy="20" r="7" fill="#ef4444" />
+                    <circle cx="176" cy="115" r="7" fill="#ef4444" />
+                    <circle cx="303" cy="125" r="7" fill="#ef4444" />
+                    <circle cx="430" cy="110" r="7" fill="#ef4444" />
+
+                    <!-- K=3 垂直標記 -->
+                    <line x1="176" y1="20" x2="176" y2="150" stroke="#16a34a" stroke-width="2.5" stroke-dasharray="5,5" />
+                    <rect x="185" y="25" width="135" height="24" fill="#f0fdf4" stroke="#86efac" rx="6" />
+                    <text x="252" y="41" font-size="12" fill="#16a34a" font-weight="bold" text-anchor="middle">最佳 K=3 (折衷商業實踐)</text>
+
+                    <!-- X軸刻度 -->
+                    <text x="50" y="170" font-size="14" fill="#64748b" font-weight="bold" text-anchor="middle">2</text>
+                    <text x="176" y="170" font-size="16" fill="#16a34a" font-weight="black" text-anchor="middle">3</text>
+                    <text x="303" y="170" font-size="14" fill="#64748b" font-weight="bold" text-anchor="middle">4</text>
+                    <text x="430" y="170" font-size="14" fill="#64748b" font-weight="bold" text-anchor="middle">5</text>
+                    <text x="240" y="195" font-size="14" font-weight="bold" fill="#334155" text-anchor="middle">Number of clusters (K)</text>
+
+                    <!-- 雙Y軸標籤 -->
+                    <text x="30" y="85" font-size="12" font-weight="bold" fill="#2563eb" text-anchor="middle" transform="rotate(-90 30 85)">WCSS (Inertia)</text>
+                    <text x="455" y="85" font-size="12" font-weight="bold" fill="#ef4444" text-anchor="middle" transform="rotate(90 455 85)">Silhouette Score</text>
+                </svg>
+            </div>
+        </div>
+        <div class="border-t-2 border-slate-100 pt-5 flex justify-between text-base font-bold text-slate-400 stagger-4">
+            <span>出處：Notebook Cell 7 K-Means 評估</span>
+            <span>解決 WCSS 數學優化與 Silhouette 分群可視化之矛盾</span>
+        </div>
+    </div>
+
+    <!-- Slide 7: 洞察二 - 搶佔黃金雙峰時段 (動態探索器) -->
+    <div class="slide justify-between" id="slide-7">
+        <div class="flex justify-between items-center w-full border-b-2 border-slate-100 pb-5 stagger-1">
+            <h3 class="text-2xl font-black text-slate-600 uppercase tracking-wider"><i class="fa-solid fa-clock text-brand-blue mr-3"></i>洞察二：搶佔黃金雙峰時段 (時段需求動態探索)</h3>
+            <span class="text-lg text-slate-400 font-bold">Slide 07 / 14</span>
+        </div>
+        <div class="grid grid-cols-12 gap-10 my-auto items-center">
+            <!-- 左側交互面版 -->
+            <div class="col-span-5 space-y-6 stagger-2">
+                <div class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-600 px-4 py-2 rounded-lg text-sm font-bold border border-emerald-100">
+                    <i class="fa-solid fa-chart-area"></i> Peak Hour Strategy
+                </div>
+                <h4 class="text-4xl font-black text-slate-900 leading-snug">極度陡峭的雙剛需<br>流量峰值</h4>
+                <p class="text-xl text-slate-600 font-medium">
+                    拉動右側滑桿，動態探查 24 小時的推薦策略：
+                </p>
+                <!-- 動態展示資訊盒子 -->
+                <div class="bg-blue-50 p-6 rounded-3xl border-2 border-blue-100 space-y-4 shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-slate-700 text-lg">探查時間：<span id="interactive-hour" class="text-brand-blue text-2xl font-black mx-1">12:00</span></span>
+                        <span id="interactive-status-badge" class="bg-red-100 text-red-700 px-3 py-1 rounded-lg font-black text-sm">午餐超極限高峰</span>
+                    </div>
+                    <div class="text-lg text-slate-700 space-y-3 font-medium">
+                        <p class="flex justify-between border-b border-blue-200/50 pb-2"><span>平台預估訂單：</span><span id="interactive-orders" class="font-black text-slate-900">~680 筆</span></p>
+                        <p class="flex justify-between border-b border-blue-200/50 pb-2"><span>物流運力狀態：</span><span id="interactive-logistics" class="text-red-600 font-black">極高，需動態配單</span></p>
+                        <div class="pt-2">
+                            <strong class="text-brand-blue block mb-1"><i class="fa-solid fa-bullseye mr-1"></i> 推薦應對策略：</strong>
+                            <span id="interactive-strategy" class="text-slate-600 leading-relaxed text-base">優先推距離近的港式茶餐廳，啟用一鍵下單，減輕外送配單調度難度。</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 右側大圖與 Slider -->
+            <div class="col-span-7 bg-slate-50/80 p-8 rounded-3xl border-2 border-slate-100 flex flex-col items-center stagger-3 shadow-inner">
+                <p class="text-base font-bold text-slate-600 mb-6">Order Volume Trend: 24h Analysis (Cell 6)</p>
+                <div class="relative w-full flex flex-col items-center">
+                    <svg width="680" height="240" viewBox="0 0 480 150" id="trend-svg" class="overflow-visible font-sans">
+                        <line x1="40" y1="20" x2="440" y2="20" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,4" />
+                        <line x1="40" y1="55" x2="440" y2="55" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,4" />
+                        <line x1="40" y1="90" x2="440" y2="90" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,4" />
+                        <line x1="40" y1="120" x2="440" y2="120" stroke="#94a3b8" stroke-width="2" />
+
+                        <line x1="240" y1="10" x2="240" y2="120" stroke="#ef4444" stroke-width="2" stroke-dasharray="4,4" />
+                        <line x1="350" y1="10" x2="350" y2="120" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4,4" />
+
+                        <polyline points="40,110 70,105 100,107 225,120 240,30 260,40 280,95 300,120 315,120 330,90 340,55 350,20 370,30 390,95 410,100 440,110" fill="none" stroke="#16a34a" stroke-width="4" />
+
+                        <circle id="interactive-point" cx="240" cy="30" r="8" fill="#ef4444" stroke="#fff" stroke-width="2" class="transition-all duration-300 shadow-lg" />
+
+                        <text x="40" y="140" font-size="12" font-weight="bold" fill="#64748b" text-anchor="middle">0h</text>
+                        <text x="140" y="140" font-size="12" font-weight="bold" fill="#64748b" text-anchor="middle">6h</text>
+                        <text x="240" y="140" font-size="14" fill="#ef4444" font-weight="black" text-anchor="middle">12h (午餐)</text>
+                        <text x="350" y="140" font-size="14" fill="#f59e0b" font-weight="black" text-anchor="middle">19h (晚餐)</text>
+                        <text x="440" y="140" font-size="12" font-weight="bold" fill="#64748b" text-anchor="middle">23h</text>
+                    </svg>
+                    <!-- 滑桿 (控制 0h 到 23h) -->
+                    <div class="w-[600px] mt-8 flex items-center gap-4 bg-white p-3 rounded-full border border-slate-200 shadow-sm">
+                        <span class="text-sm font-bold text-slate-400">0h</span>
+                        <input type="range" id="hour-slider" min="0" max="23" value="12" oninput="updateHourExplorer(this.value)" class="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-blue">
+                        <span class="text-sm font-bold text-slate-400">23h</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="border-t-2 border-slate-100 pt-5 flex justify-between text-base font-bold text-slate-400 stagger-4">
+            <span>出處：Notebook Cell 6 訂單時間分佈</span>
+            <span>拖動下方滑桿解鎖全天推薦調度計畫</span>
+        </div>
+    </div>
+
+    <!-- Slide 8: 在地化偏好的熱區挖掘 -->
+    <div class="slide justify-between" id="slide-8">
+        <div class="flex justify-between items-center w-full border-b-2 border-slate-100 pb-5 stagger-1">
+            <h3 class="text-2xl font-black text-slate-600 uppercase tracking-wider"><i class="fa-solid fa-map-location-dot text-brand-blue mr-3"></i>洞察三：在地化偏好的熱區挖掘</h3>
+            <span class="text-lg text-slate-400 font-bold">Slide 08 / 14</span>
+        </div>
+        <div class="grid grid-cols-12 gap-10 my-auto items-center">
+            <!-- 左側解說 -->
+            <div class="col-span-4 space-y-6 stagger-2">
+                <div class="inline-flex items-center gap-2 bg-amber-50 text-amber-600 px-4 py-2 rounded-lg text-sm font-bold border border-amber-100">
+                    <i class="fa-solid fa-fire"></i> Localized Hotspot
+                </div>
+                <h4 class="text-4xl font-black text-slate-900 leading-tight">港式茶餐廳<br>具備絕對統治力</h4>
+                <p class="text-lg text-slate-600 font-medium">
+                    特定地段偏好極其強烈。移動到右側熱度網格，動態獲取數值：
+                </p>
+                <div id="heatmap-info-box" class="bg-blue-50 text-brand-blue border-2 border-blue-100 p-6 rounded-3xl text-xl space-y-3 shadow-sm">
+                    <p class="font-black text-2xl flex items-center gap-2"><i class="fa-solid fa-location-dot text-brand-accent"></i> <span id="heat-district">旺角 (Mong Kok)</span></p>
+                    <p class="text-slate-700 font-medium">菜系分類：<span id="heat-cuisine" class="font-bold text-slate-900">港式茶餐廳 (HK Cafe)</span></p>
+                    <p class="text-2xl font-black text-brand-accent pt-3 border-t-2 border-blue-200/50">累計訂單：<span id="heat-value" class="text-4xl px-2">423</span> 單</p>
+                </div>
+            </div>
+            <!-- 右側大字體實時漸變色熱區網格 -->
+            <div class="col-span-8 bg-white p-6 rounded-3xl border-2 border-slate-200 shadow-sm overflow-hidden stagger-3">
+                <p class="text-sm font-bold text-slate-500 text-center mb-4 uppercase tracking-widest">Order Heatmap Matrix: Districts vs Cuisine (Cell 6)</p>
+                <div class="grid grid-cols-9 gap-1.5 text-center text-sm font-bold">
+                    <!-- Header -->
+                    <span class="text-slate-400 text-left self-center text-xs">地區/菜系</span>
+                    <span class="text-slate-700 bg-slate-100 py-2 rounded-lg">HK Cafe</span>
+                    <span class="text-slate-700 bg-slate-100 py-2 rounded-lg">Japanese</span>
+                    <span class="text-slate-700 bg-slate-100 py-2 rounded-lg">Korean</span>
+                    <span class="text-slate-700 bg-slate-100 py-2 rounded-lg">West Fast</span>
+                    <span class="text-slate-700 bg-slate-100 py-2 rounded-lg">Chinese</span>
+                    <span class="text-slate-700 bg-slate-100 py-2 rounded-lg">Local</span>
+                    <span class="text-slate-700 bg-slate-100 py-2 rounded-lg">Fast</span>
+                    <span class="text-slate-700 bg-slate-100 py-2 rounded-lg">Other</span>
+
+                    <!-- Causeway Bay -->
+                    <span class="text-slate-600 text-left self-center text-[13px]">Causeway Bay</span>
+                    <span onmouseover="hoverHeat('銅鑼灣 (Causeway Bay)', '港式茶餐廳', 332)" class="bg-blue-600 text-white text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">332</span>
+                    <span onmouseover="hoverHeat('銅鑼灣 (Causeway Bay)', '日式料理', 60)" class="bg-blue-100 text-slate-800 text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">60</span>
+                    <span onmouseover="hoverHeat('銅鑼灣 (Causeway Bay)', '韓式料理', 0)" class="bg-slate-50 text-slate-300 text-base py-3 rounded-lg">0</span>
+                    <span onmouseover="hoverHeat('銅鑼灣 (Causeway Bay)', '西式快餐', 74)" class="bg-blue-100 text-slate-800 text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">74</span>
+                    <span onmouseover="hoverHeat('銅鑼灣 (Causeway Bay)', '中式料理', 112)" class="bg-blue-200 text-slate-800 text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">112</span>
+                    <span onmouseover="hoverHeat('銅鑼灣 (Causeway Bay)', '在地小吃', 0)" class="bg-slate-50 text-slate-300 text-base py-3 rounded-lg">0</span>
+                    <span onmouseover="hoverHeat('銅鑼灣 (Causeway Bay)', '快餐飲料', 34)" class="bg-blue-50 text-slate-800 text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">34</span>
+                    <span onmouseover="hoverHeat('銅鑼灣 (Causeway Bay)', '其他美食', 92)" class="bg-blue-100 text-slate-800 text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">92</span>
+
+                    <!-- Central -->
+                    <span class="text-slate-600 text-left self-center text-[13px]">Central</span>
+                    <span onmouseover="hoverHeat('中環 (Central)', '港式茶餐廳', 217)" class="bg-blue-400 text-slate-900 text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">217</span>
+                    <span onmouseover="hoverHeat('中環 (Central)', '日式料理', 75)" class="bg-blue-100 text-slate-800 text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">75</span>
+                    <span onmouseover="hoverHeat('中環 (Central)', '韓式料理', 0)" class="bg-slate-50 text-slate-300 text-base py-3 rounded-lg">0</span>
+                    <span onmouseover="hoverHeat('中環 (Central)', '西式快餐', 131)" class="bg-blue-200 text-slate-800 text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">131</span>
+                    <span onmouseover="hoverHeat('中環 (Central)', '中式料理', 0)" class="bg-slate-50 text-slate-300 text-base py-3 rounded-lg">0</span>
+                    <span onmouseover="hoverHeat('中環 (Central)', '在地小吃', 0)" class="bg-slate-50 text-slate-300 text-base py-3 rounded-lg">0</span>
+                    <span onmouseover="hoverHeat('中環 (Central)', '快餐飲料', 0)" class="bg-slate-50 text-slate-300 text-base py-3 rounded-lg">0</span>
+                    <span onmouseover="hoverHeat('中環 (Central)', '其他美食', 148)" class="bg-blue-200 text-slate-800 text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">148</span>
+
+                    <!-- Kwun Tong -->
+                    <span class="text-slate-600 text-left self-center text-[13px]">Kwun Tong</span>
+                    <span onmouseover="hoverHeat('觀塘 (Kwun Tong)', '港式茶餐廳', 293)" class="bg-blue-500 text-white text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">293</span>
+                    <span onmouseover="hoverHeat('觀塘 (Kwun Tong)', '日式料理', 121)" class="bg-blue-200 text-slate-800 text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">121</span>
+                    <span onmouseover="hoverHeat('觀塘 (Kwun Tong)', '韓式料理', 97)" class="bg-blue-100 text-slate-800 text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">97</span>
+                    <span onmouseover="hoverHeat('觀塘 (Kwun Tong)', '西式快餐', 99)" class="bg-blue-100 text-slate-800 text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">99</span>
+                    <span onmouseover="hoverHeat('觀塘 (Kwun Tong)', '中式料理', 0)" class="bg-slate-50 text-slate-300 text-base py-3 rounded-lg">0</span>
+                    <span onmouseover="hoverHeat('觀塘 (Kwun Tong)', '在地小吃', 0)" class="bg-slate-50 text-slate-300 text-base py-3 rounded-lg">0</span>
+                    <span onmouseover="hoverHeat('觀塘 (Kwun Tong)', '快餐飲料', 0)" class="bg-slate-50 text-slate-300 text-base py-3 rounded-lg">0</span>
+                    <span onmouseover="hoverHeat('觀塘 (Kwun Tong)', '其他美食', 0)" class="bg-slate-50 text-slate-300 text-base py-3 rounded-lg">0</span>
+
+                    <!-- Mong Kok -->
+                    <span class="text-slate-600 text-left self-center text-[13px] text-brand-blue">Mong Kok</span>
+                    <span onmouseover="hoverHeat('旺角 (Mong Kok)', '港式茶餐廳', 423)" class="bg-blue-900 text-white text-lg py-3 rounded-lg cursor-pointer hover:scale-110 transition-all shadow-md">423</span>
+                    <span onmouseover="hoverHeat('旺角 (Mong Kok)', '日式料理', 65)" class="bg-blue-100 text-slate-800 text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">65</span>
+                    <span onmouseover="hoverHeat('旺角 (Mong Kok)', '韓式料理', 37)" class="bg-blue-50 text-slate-800 text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">37</span>
+                    <span onmouseover="hoverHeat('旺角 (Mong Kok)', '西式快餐', 63)" class="bg-blue-100 text-slate-800 text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">63</span>
+                    <span onmouseover="hoverHeat('旺角 (Mong Kok)', '中式料理', 112)" class="bg-blue-200 text-slate-800 text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">112</span>
+                    <span onmouseover="hoverHeat('旺角 (Mong Kok)', '在地小吃', 37)" class="bg-blue-50 text-slate-800 text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">37</span>
+                    <span onmouseover="hoverHeat('旺角 (Mong Kok)', '快餐飲料', 21)" class="bg-blue-50 text-slate-800 text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">21</span>
+                    <span onmouseover="hoverHeat('旺角 (Mong Kok)', '其他美食', 120)" class="bg-blue-200 text-slate-800 text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">120</span>
+
+                    <!-- Tsim Sha Tsui -->
+                    <span class="text-slate-600 text-left self-center text-[13px] text-brand-blue">Tsim Sha Tsui</span>
+                    <span onmouseover="hoverHeat('尖沙咀 (Tsim Sha Tsui)', '港式茶餐廳', 319)" class="bg-blue-500 text-white text-lg py-3 rounded-lg cursor-pointer hover:scale-110 transition-all shadow-md">319</span>
+                    <span onmouseover="hoverHeat('尖沙咀 (Tsim Sha Tsui)', '日式料理', 44)" class="bg-blue-50 text-slate-800 text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">44</span>
+                    <span onmouseover="hoverHeat('尖沙咀 (Tsim Sha Tsui)', '韓式料理', 190)" class="bg-blue-300 text-slate-900 text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">190</span>
+                    <span onmouseover="hoverHeat('尖沙咀 (Tsim Sha Tsui)', '西式快餐', 60)" class="bg-blue-100 text-slate-800 text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">60</span>
+                    <span onmouseover="hoverHeat('尖沙咀 (Tsim Sha Tsui)', '中式料理', 39)" class="bg-blue-50 text-slate-800 text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">39</span>
+                    <span onmouseover="hoverHeat('尖沙咀 (Tsim Sha Tsui)', '在地小吃', 83)" class="bg-blue-100 text-slate-800 text-base py-3 rounded-lg cursor-pointer hover:scale-105 transition-all">83</span>
+                    <span onmouseover="hoverHeat('尖沙咀 (Tsim Sha Tsui)', '快餐飲料', 0)" class="bg-slate-50 text-slate-300 text-base py-3 rounded-lg">0</span>
+                    <span onmouseover="hoverHeat('尖沙咀 (Tsim Sha Tsui)', '其他美食', 0)" class="bg-slate-50 text-slate-300 text-base py-3 rounded-lg">0</span>
+                </div>
+            </div>
+        </div>
+        <div class="border-t-2 border-slate-100 pt-5 flex justify-between text-base font-bold text-slate-400 stagger-4">
+            <span>出處：Notebook Cell 6 地區與菜系矩陣</span>
+            <span>交互亮點：滑鼠懸停至儲存格可交互檢視詳細單數</span>
+        </div>
+    </div>
+
+    <!-- Slide 9: 洞察四 - 高額客單價極端值分析 -->
+    <div class="slide justify-between" id="slide-9">
+        <div class="flex justify-between items-center w-full border-b-2 border-slate-100 pb-5 stagger-1">
+            <h3 class="text-2xl font-black text-slate-600 uppercase tracking-wider"><i class="fa-solid fa-wallet text-brand-blue mr-3"></i>洞察四：捕捉高額客單價極端值</h3>
+            <span class="text-lg text-slate-400 font-bold">Slide 09 / 14</span>
+        </div>
+        <div class="grid grid-cols-12 gap-10 my-auto items-center">
+            <!-- 左側文字 -->
+            <div class="col-span-5 space-y-6 stagger-2">
+                <div class="inline-flex items-center gap-2 bg-purple-50 text-purple-600 px-4 py-2 rounded-lg text-sm font-bold border border-purple-100">
+                    <i class="fa-solid fa-arrow-up-right-dots"></i> Outliers Discovery
+                </div>
+                <h4 class="text-4xl font-black text-slate-900 tracking-tight">高階會員隱藏消費力</h4>
+                <p class="text-xl text-slate-600 leading-relaxed font-medium">
+                    日常中位數均落在 <strong>$100~$110</strong>，但高階鑽石會員存在大量高達 <strong>$400~$500</strong> 的極端大單。
+                </p>
+                <div class="p-6 bg-purple-50 border-2 border-purple-100 rounded-2xl shadow-sm">
+                    <p class="text-lg text-purple-800 font-bold leading-relaxed">
+                        <i class="fa-solid fa-circle-exclamation mr-2 text-2xl text-purple-600"></i> 代表高階會員在「聚會或商務」具強烈消費意願。偵測到「多品項」訂單時，應立即插卡推薦高客單價宴席套餐！
+                    </p>
+                </div>
+            </div>
+            <!-- 右側實時 SVG 大字體箱線圖 -->
+            <div class="col-span-7 bg-slate-50/80 p-8 rounded-3xl border-2 border-slate-100 flex flex-col items-center stagger-3 shadow-inner">
+                <p class="text-base font-bold text-slate-600 mb-6 uppercase tracking-widest">Member Spending Distribution (Cell 14)</p>
+                <svg width="680" height="260" viewBox="0 0 480 180" class="overflow-visible font-sans">
+                    <!-- 背景坐標 -->
+                    <line x1="60" y1="20" x2="60" y2="140" stroke="#cbd5e1" stroke-width="2" />
+                    <line x1="60" y1="140" x2="440" y2="140" stroke="#cbd5e1" stroke-width="2" />
+                    
+                    <!-- X軸刻度 -->
+                    <text x="60" y="160" font-size="12" font-weight="bold" fill="#64748b" text-anchor="middle">$0</text>
+                    <text x="140" y="160" font-size="12" font-weight="bold" fill="#64748b" text-anchor="middle">$100 (中位)</text>
+                    <text x="240" y="160" font-size="12" font-weight="bold" fill="#64748b" text-anchor="middle">$250</text>
+                    <text x="340" y="160" font-size="12" font-weight="bold" fill="#64748b" text-anchor="middle">$400</text>
+                    <text x="420" y="160" font-size="12" fill="#ef4444" font-weight="black" text-anchor="middle">$500+ (極值)</text>
+
+                    <!-- Silver Member Row -->
+                    <text x="10" y="55" font-size="13" font-weight="black" fill="#64748b">普通卡</text>
+                    <line x1="100" y1="50" x2="180" y2="50" stroke="#475569" stroke-width="3" />
+                    <rect x="120" y="35" width="35" height="30" fill="#e2e8f0" stroke="#475569" stroke-width="2" />
+                    <line x1="140" y1="35" x2="140" y2="65" stroke="#1e293b" stroke-width="3" />
+
+                    <!-- Diamond Member Row -->
+                    <text x="10" y="105" font-size="13" font-weight="black" fill="#2563eb">鑽石卡</text>
+                    <line x1="100" y1="100" x2="200" y2="100" stroke="#2563eb" stroke-width="3" />
+                    <rect x="125" y="85" width="45" height="30" fill="#bfdbfe" stroke="#2563eb" stroke-width="2" />
+                    <line x1="145" y1="85" x2="145" y2="115" stroke="#1e40af" stroke-width="3" />
+                    
+                    <!-- 極端高客單紅點 -->
+                    <circle cx="340" cy="100" r="6" fill="#ef4444" opacity="0.8" class="hover:scale-150 transition-all cursor-pointer" />
+                    <circle cx="380" cy="100" r="6" fill="#ef4444" opacity="0.8" class="hover:scale-150 transition-all cursor-pointer" />
+                    <circle cx="415" cy="100" r="6" fill="#ef4444" opacity="0.8" class="hover:scale-150 transition-all cursor-pointer" />
+                    
+                    <!-- 極端值範圍線標示框 -->
+                    <rect x="310" y="45" width="125" height="32" fill="#fef2f2" stroke="#fca5a5" stroke-width="2" rx="6" />
+                    <text x="372" y="65" font-size="12" fill="#dc2626" font-weight="black" text-anchor="middle">多人/商務大額訂單</text>
+                </svg>
+            </div>
+        </div>
+        <div class="border-t-2 border-slate-100 pt-5 flex justify-between text-base font-bold text-slate-400 stagger-4">
+            <span>出處：Notebook Cell 14 客戶消費額極值分析</span>
+            <span>商業洞察：發現異常值（Outliers）背後的高獲利爆發點</span>
+        </div>
+    </div>
+
+    <!-- Slide 10: 人機協作亮點 - 修正 AI 盲區 -->
+    <div class="slide justify-between" id="slide-10">
+        <div class="flex justify-between items-center w-full border-b-2 border-slate-100 pb-5 stagger-1">
+            <h3 class="text-2xl font-black text-slate-600 uppercase tracking-wider"><i class="fa-solid fa-user-gear text-brand-blue mr-3"></i>人機協作亮點：修正 AI 模型盲區</h3>
+            <span class="text-lg text-slate-400 font-bold">Slide 10 / 14</span>
+        </div>
+        <div class="grid grid-cols-2 gap-10 my-auto stagger-2">
+            <!-- 修正一 K-Means -->
+            <div class="border-2 border-slate-200 bg-slate-50/50 rounded-3xl p-8 flex flex-col justify-between h-[480px] shadow-sm">
+                <div class="space-y-6">
+                    <div class="flex items-center justify-between">
+                        <span class="flex items-center gap-3 text-brand-blue font-black text-xl">
+                            <span class="w-3 h-3 rounded-full bg-brand-blue animate-ping"></span>
+                            聚類分群邏輯修正 (K-Means)
+                        </span>
+                        <span class="text-sm bg-blue-100 text-brand-blue font-bold px-3 py-1.5 rounded-lg">Cell 7 修正</span>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-red-50 border border-red-200 rounded-2xl p-5">
+                            <p class="text-red-700 font-bold text-lg mb-2"><i class="fa-solid fa-robot mr-2"></i> AI 原生建議：</p>
+                            <p class="text-red-600 font-medium text-base">依據數學指標（WCSS），粗暴將全平台用戶分成四群。</p>
+                        </div>
+                        <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-5 shadow-inner">
+                            <p class="text-emerald-700 font-bold text-lg mb-2"><i class="fa-solid fa-user-tie mr-2"></i> 我的修正 ＆ 理由：</p>
+                            <p class="text-emerald-800 font-medium text-base"><strong>選擇 K=3，並過濾 2% 異常值。</strong><br>避免分出缺乏行銷規模的群體，確保決策能落地！</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-sm font-bold text-slate-400 border-t-2 border-slate-200/50 pt-4">
+                    成果：免於被無價值數學分群牽制 ｜ 鎖定黃金主客群
+                </div>
+            </div>
+            <!-- 修正二 Cosine -->
+            <div class="border-2 border-slate-200 bg-slate-50/50 rounded-3xl p-8 flex flex-col justify-between h-[480px] shadow-sm">
+                <div class="space-y-6">
+                    <div class="flex items-center justify-between">
+                        <span class="flex items-center gap-3 text-emerald-600 font-black text-xl">
+                            <span class="w-3 h-3 rounded-full bg-emerald-600 animate-ping"></span>
+                            特徵工程冷啟動修正 (Cosine)
+                        </span>
+                        <span class="text-sm bg-emerald-100 text-emerald-700 font-bold px-3 py-1.5 rounded-lg">Cell 9 修正</span>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-red-50 border border-red-200 rounded-2xl p-5">
+                            <p class="text-red-700 font-bold text-lg mb-2"><i class="fa-solid fa-robot mr-2"></i> AI 原生建議：</p>
+                            <p class="text-red-600 font-medium text-base">Cosine 推薦僅依據「菜色種類」單一特徵算夾角。</p>
+                        </div>
+                        <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-5 shadow-inner">
+                            <p class="text-emerald-700 font-bold text-lg mb-2"><i class="fa-solid fa-user-tie mr-2"></i> 我的修正 ＆ 理由：</p>
+                            <p class="text-emerald-800 font-medium text-base"><strong>加入「地理區域」與「均單價位」。</strong><br>防止系統跨區推薦物流無法送達或價格不符的幽靈餐廳。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-sm font-bold text-slate-400 border-t-2 border-slate-200/50 pt-4">
+                    成果：杜絕「看得到吃不到」 ｜ 預期轉換提升 18%
+                </div>
+            </div>
+        </div>
+        <div class="border-t-2 border-slate-100 pt-5 flex justify-between text-base font-bold text-slate-400 stagger-3">
+            <span>依據：03_PDF報告 (3).docx 第 3.5 節</span>
+            <span>人機協作：AI 提供核心算力 ｜ 人類守護商務邏輯</span>
+        </div>
+    </div>
+
+    <!-- Slide 11: 驅動營收：三大核心落地策略 (4 Elements) -->
+    <div class="slide justify-between" id="slide-11">
+        <div class="flex justify-between items-center w-full border-b-2 border-slate-100 pb-5 stagger-1">
+            <h3 class="text-2xl font-black text-slate-600 uppercase tracking-wider"><i class="fa-solid fa-business-time text-brand-blue mr-3"></i>驅動營收：三大核心落地策略 (4 Elements)</h3>
+            <span class="text-lg text-slate-400 font-bold">Slide 11 / 14</span>
+        </div>
+        <div class="grid grid-cols-3 gap-8 my-auto stagger-2">
+            <!-- 策略 1 -->
+            <div class="border-2 border-slate-200 rounded-3xl p-6 bg-white space-y-5 flex flex-col justify-between shadow-sm hover:shadow-lg transition-shadow">
+                <div class="space-y-3">
+                    <span class="bg-blue-50 text-brand-blue px-3 py-1.5 rounded-lg text-sm font-black uppercase">策略 01</span>
+                    <h4 class="text-xl font-black text-slate-900">黃金會員「港式跨店組合」與雙峰免運</h4>
+                    <p class="text-base text-slate-500 font-medium">針對 Gold 會員茶餐廳高頻點餐特徵，首頁精準投遞優惠組合。</p>
+                </div>
+                <div class="bg-slate-50 border border-slate-100 p-4 rounded-xl text-sm text-slate-700 space-y-2 font-bold">
+                    <p><strong class="text-brand-blue">Why：</strong>Cell 7 茶餐廳訂單達 627 筆</p>
+                    <p><strong class="text-brand-blue">效益：</strong>提升黃金客群複購 15%</p>
+                    <p class="text-red-600"><strong>風險：</strong>雙峰物流吃緊，需配動態費率</p>
+                </div>
+            </div>
+            <!-- 策略 2 -->
+            <div class="border-2 border-slate-200 rounded-3xl p-6 bg-white space-y-5 flex flex-col justify-between shadow-sm hover:shadow-lg transition-shadow">
+                <div class="space-y-3">
+                    <span class="bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-lg text-sm font-black uppercase">策略 02</span>
+                    <h4 class="text-xl font-black text-slate-900">活化閒置運能：「甜點下午茶卡片」</h4>
+                    <p class="text-base text-slate-500 font-medium">精準捕捉下午 (14-16h) 針對寫字樓白領推送甜點熱飲促銷。</p>
+                </div>
+                <div class="bg-slate-50 border border-slate-100 p-4 rounded-xl text-sm text-slate-700 space-y-2 font-bold">
+                    <p><strong class="text-emerald-600">Why：</strong>Cell 9 顯示 15h 甜點反彈高峰</p>
+                    <p><strong class="text-emerald-600">效益：</strong>下午茶時段營收成長 20%</p>
+                    <p class="text-red-600"><strong>風險：</strong>單客單價偏低，略稀釋均價</p>
+                </div>
+            </div>
+            <!-- 策略 3 -->
+            <div class="border-2 border-slate-200 rounded-3xl p-6 bg-white space-y-5 flex flex-col justify-between shadow-sm hover:shadow-lg transition-shadow">
+                <div class="space-y-3">
+                    <span class="bg-amber-50 text-amber-600 px-3 py-1.5 rounded-lg text-sm font-black uppercase">策略 03</span>
+                    <h4 class="text-xl font-black text-slate-900">高階會員「多人宴席」插卡推薦</h4>
+                    <p class="text-base text-slate-500 font-medium">系統感知高階會員大單特徵時，首頁置頂高單價合菜推薦。</p>
+                </div>
+                <div class="bg-slate-50 border border-slate-100 p-4 rounded-xl text-sm text-slate-700 space-y-2 font-bold">
+                    <p><strong class="text-amber-600">Why：</strong>Cell 14 顯示大量大額 Outliers</p>
+                    <p><strong class="text-amber-600">效益：</strong>拉高客單價上限約 12%</p>
+                    <p class="text-red-600"><strong>風險：</strong>演算法過敏恐造成推銷反感</p>
+                </div>
+            </div>
+        </div>
+        <div class="border-t-2 border-slate-100 pt-5 flex justify-between text-base font-bold text-slate-400 stagger-3">
+            <span>依據：03_PDF報告 (3).docx 第 4.1 節</span>
+            <span>完美覆蓋 What / Why / Impact / Risk 決策模型</span>
+        </div>
+    </div>
+
+    <!-- Slide 12: 技術限制挑戰 (Limitations) -->
+    <div class="slide justify-between" id="slide-12">
+        <div class="flex justify-between items-center w-full border-b-2 border-slate-100 pb-5 stagger-1">
+            <h3 class="text-2xl font-black text-slate-600 uppercase tracking-wider"><i class="fa-solid fa-triangle-exclamation text-brand-blue mr-3"></i>技術模型的先天限制與挑戰</h3>
+            <span class="text-lg text-slate-400 font-bold">Slide 12 / 14</span>
+        </div>
+        <div class="grid grid-cols-3 gap-8 my-auto stagger-2">
+            <!-- 限制 1 -->
+            <div class="border-2 border-slate-100 rounded-3xl p-8 bg-white shadow-sm flex flex-col items-center text-center space-y-5">
+                <div class="w-full h-32 flex justify-center items-end bg-slate-50 rounded-xl pt-4">
+                    <!-- Cold Start SVG -->
+                    <svg width="200" height="100" viewBox="0 0 200 100" class="overflow-visible">
+                        <line x1="10" y1="80" x2="190" y2="80" stroke="#cbd5e1" stroke-width="2"/>
+                        <line x1="10" y1="80" x2="10" y2="10" stroke="#cbd5e1" stroke-width="2"/>
+                        <path d="M 10 80 Q 50 80 80 80 T 190 20" fill="none" stroke="#3b82f6" stroke-width="4"/>
+                        <rect x="20" y="60" width="50" height="30" fill="#fee2e2" opacity="0.6"/>
+                        <text x="45" y="75" font-size="20" fill="#ef4444" font-weight="black" text-anchor="middle">!</text>
+                    </svg>
+                </div>
+                <h4 class="text-2xl font-black text-slate-900">新客冷啟動限制</h4>
+                <p class="text-base text-slate-500 font-medium">缺乏歷史交易，Cosine 無法計算分子，初期只能退回公版榜單。</p>
+            </div>
+            <!-- 限制 2 -->
+            <div class="border-2 border-slate-100 rounded-3xl p-8 bg-white shadow-sm flex flex-col items-center text-center space-y-5">
+                <div class="w-full h-32 flex justify-center items-end bg-slate-50 rounded-xl pt-4">
+                    <!-- Delay Lag SVG -->
+                    <svg width="200" height="100" viewBox="0 0 200 100" class="overflow-visible">
+                        <path d="M 10 80 Q 50 20 100 80" fill="none" stroke="#10b981" stroke-width="4" stroke-dasharray="4,4"/>
+                        <path d="M 50 80 Q 90 20 140 80" fill="none" stroke="#f59e0b" stroke-width="4"/>
+                        <line x1="55" y1="40" x2="95" y2="40" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+                        <text x="75" y="30" font-size="12" fill="#64748b" font-weight="bold" text-anchor="middle">Time Lag</text>
+                    </svg>
+                </div>
+                <h4 class="text-2xl font-black text-slate-900">關聯靜態僵化</h4>
+                <p class="text-base text-slate-500 font-medium">Apriori 高度依賴歷史，無法即時反應短週期「突發口味劇變」。</p>
+            </div>
+            <!-- 限制 3 -->
+            <div class="border-2 border-slate-100 rounded-3xl p-8 bg-white shadow-sm flex flex-col items-center text-center space-y-5">
+                <div class="w-full h-32 flex justify-center items-center bg-slate-50 rounded-xl">
+                    <!-- Filter Bubble SVG -->
+                    <svg width="150" height="100" viewBox="0 0 150 100" class="overflow-visible">
+                        <circle cx="50" cy="50" r="40" fill="#e0e7ff" stroke="#3b82f6" stroke-width="2"/>
+                        <circle cx="40" cy="40" r="5" fill="#1e40af"/><circle cx="60" cy="45" r="5" fill="#1e40af"/><circle cx="45" cy="60" r="5" fill="#1e40af"/>
+                        <line x1="40" y1="40" x2="60" y2="45" stroke="#93c5fd" stroke-width="1"/>
+                        <line x1="60" y1="45" x2="45" y2="60" stroke="#93c5fd" stroke-width="1"/>
+                        <circle cx="130" cy="30" r="5" fill="#ef4444"/> <!-- Isolated node -->
+                        <circle cx="120" cy="70" r="5" fill="#ef4444"/>
+                    </svg>
+                </div>
+                <h4 class="text-2xl font-black text-slate-900">用戶防禦防護</h4>
+                <p class="text-base text-slate-500 font-medium">即使混入多樣餐廳，若用戶習慣無視，模型會被點擊行為再度鎖死。</p>
+            </div>
+        </div>
+        <div class="border-t-2 border-slate-100 pt-5 flex justify-between text-base font-bold text-slate-400 stagger-3">
+            <span>依據：03_PDF報告 (3).docx 第 4.2 節</span>
+            <span>科學客觀評估：數據模型是輔佐，判斷力才是核心</span>
+        </div>
+    </div>
+
+    <!-- Slide 13: 團隊專案反思 (AI vs 人類雷達圖) -->
+    <div class="slide justify-between" id="slide-13">
+        <div class="flex justify-between items-center w-full border-b-2 border-slate-100 pb-5 stagger-1">
+            <h3 class="text-2xl font-black text-slate-600 uppercase tracking-wider"><i class="fa-solid fa-brain text-brand-blue mr-3"></i>團隊專案反思</h3>
+            <span class="text-lg text-slate-400 font-bold">Slide 13 / 14</span>
+        </div>
+        <div class="grid grid-cols-2 gap-12 my-auto items-center stagger-2">
+            <!-- 左側語錄 -->
+            <div class="space-y-6 px-4">
+                <div class="text-6xl text-brand-blue/20"><i class="fa-solid fa-quote-left"></i></div>
+                <p class="text-3xl font-black text-slate-800 leading-relaxed">
+                    「AI 能在一秒內寫出推薦演算法，但要將模型扣連真實商業限制，仍需要人類的<strong class="text-brand-blue">判斷與決策力</strong>。」
+                </p>
+                <p class="text-lg text-slate-500 font-medium leading-relaxed border-l-4 border-brand-blue pl-4">
+                    若完全順從 AI，我們將推薦出無法跨區配送的荒謬美食。批判性思考才是最核心的競爭力。
+                </p>
+            </div>
+            <!-- 右側 AI vs Human Radar Chart -->
+            <div class="bg-slate-50 p-8 rounded-3xl border-2 border-slate-100 flex flex-col items-center">
+                <p class="text-lg font-black text-slate-700 mb-6">能力雷達圖：AI 演算法 vs 人類顧問</p>
+                <svg width="350" height="300" viewBox="0 0 300 300" class="overflow-visible font-sans">
+                    <!-- Radar Base -->
+                    <!-- 5 axis: Speed, Precision, Business Logic, Ethics, Adaptability -->
+                    <polygon points="150,30 264,113 220,244 80,244 36,113" fill="none" stroke="#cbd5e1" stroke-width="2" />
+                    <polygon points="150,60 235,122 202,221 98,221 65,122" fill="none" stroke="#e2e8f0" stroke-width="1" />
+                    <polygon points="150,90 206,131 184,197 116,197 94,131" fill="none" stroke="#e2e8f0" stroke-width="1" />
+                    <!-- Axis lines -->
+                    <line x1="150" y1="150" x2="150" y2="30" stroke="#cbd5e1" />
+                    <line x1="150" y1="150" x2="264" y2="113" stroke="#cbd5e1" />
+                    <line x1="150" y1="150" x2="220" y2="244" stroke="#cbd5e1" />
+                    <line x1="150" y1="150" x2="80" y2="244" stroke="#cbd5e1" />
+                    <line x1="150" y1="150" x2="36" y2="113" stroke="#cbd5e1" />
+                    
+                    <!-- Labels -->
+                    <text x="150" y="20" font-size="14" font-weight="bold" fill="#64748b" text-anchor="middle">運算速度</text>
+                    <text x="275" y="115" font-size="14" font-weight="bold" fill="#64748b" text-anchor="start">數學精準</text>
+                    <text x="230" y="260" font-size="14" font-weight="bold" fill="#64748b" text-anchor="middle">商業邏輯</text>
+                    <text x="70" y="260" font-size="14" font-weight="bold" fill="#64748b" text-anchor="middle">多樣性/倫理</text>
+                    <text x="25" y="115" font-size="14" font-weight="bold" fill="#64748b" text-anchor="end">應變彈性</text>
+
+                    <!-- AI Data (Blue) -->
+                    <!-- Speed: 100%, Math: 90%, Business: 30%, Ethics: 20%, Adapt: 40% -->
+                    <polygon points="150,30 252,120 171,215 127,206 104,138" fill="rgba(37, 99, 235, 0.2)" stroke="#2563eb" stroke-width="3" />
+                    <!-- Human Data (Emerald) -->
+                    <!-- Speed: 40%, Math: 50%, Business: 90%, Ethics: 90%, Adapt: 80% -->
+                    <polygon points="150,102 207,135 213,235 91,235 59,120" fill="rgba(16, 185, 129, 0.2)" stroke="#10b981" stroke-width="3" />
+                </svg>
+                <div class="flex gap-6 mt-4">
+                    <span class="flex items-center gap-2 text-sm font-bold text-slate-700"><span class="w-4 h-4 bg-blue-500 rounded"></span> AI 演算法</span>
+                    <span class="flex items-center gap-2 text-sm font-bold text-slate-700"><span class="w-4 h-4 bg-emerald-500 rounded"></span> 人類顧問</span>
+                </div>
+            </div>
+        </div>
+        <div class="border-t-2 border-slate-100 pt-5 flex justify-between text-base font-bold text-slate-400 stagger-3">
+            <span>反思來源：03_PDF報告 (3).docx 第 4.3 節</span>
+            <span>顧問團隊：李華錚 ｜ 易璴攸 ｜ 陳瑋珽 ｜ 蔡睿琦</span>
+        </div>
+    </div>
+
+    <!-- Slide 14: Q&A / 結尾 -->
+    <div class="slide justify-between" id="slide-14">
+        <div class="flex justify-between items-center w-full border-b-2 border-slate-100 pb-5 stagger-1">
+            <span class="text-lg font-bold tracking-widest text-brand-blue uppercase bg-brand-light px-5 py-2.5 rounded-full border border-blue-100">快送 GO 客戶體驗部報告結束</span>
+            <span class="text-lg text-slate-400 font-bold">Slide 14 / 14</span>
+        </div>
+        <div class="my-auto text-center space-y-8 stagger-2">
+            <h2 class="text-[100px] font-black text-brand-blue tracking-tight leading-none">Q & A</h2>
+            <p class="text-3xl font-bold text-slate-700">感謝各位長官、評委聆聽，歡迎提問指教。</p>
+            <div class="h-2 w-24 bg-brand-blue mx-auto rounded-full"></div>
+            <div class="text-xl text-slate-500 space-y-3 pt-6 font-medium">
+                <p class="font-black text-slate-800 text-2xl">快送 GO 顧問建議報告 ｜ 第 3 組</p>
+                <p class="bg-slate-50 inline-block px-6 py-3 rounded-2xl border border-slate-200">05 李華錚 ｜ 09 易璴攸 ｜ 20 陳瑋珽 ｜ 31 蔡睿琦</p>
+            </div>
+        </div>
+        <div class="border-t-2 border-slate-100 pt-5 flex justify-between text-base font-bold text-slate-400 stagger-3">
+            <span>簡報格式：極簡白網頁交互 HTML5</span>
+            <span>祝匯報順利 ｜ 圓滿成功</span>
+        </div>
+    </div>
+
+</div>
+
+<!-- 底部控制面版與閱讀指示 -->
+<div class="control-panel flex items-center gap-6 px-6 py-3.5 rounded-full shadow-2xl">
+    <button onclick="prevSlide()" class="w-10 h-10 rounded-full flex items-center justify-center bg-slate-50 hover:bg-slate-100 text-slate-700 active:scale-90 transition-all border border-slate-200 shadow-sm cursor-pointer">
+        <i class="fa-solid fa-chevron-left text-sm"></i>
+    </button>
+    <div class="text-base font-black text-slate-600 w-16 text-center" id="slide-indicator">
+        1 / 14
+    </div>
+    <button onclick="nextSlide()" class="w-10 h-10 rounded-full flex items-center justify-center bg-brand-blue hover:bg-brand-accent text-white active:scale-90 transition-all shadow-md cursor-pointer">
+        <i class="fa-solid fa-chevron-right text-sm"></i>
+    </button>
+    <div class="h-6 w-[2px] bg-slate-200"></div>
+    <span class="text-xs font-bold text-slate-400 hidden sm:inline tracking-wider"><i class="fa-solid fa-keyboard mr-2 text-sm"></i>可用鍵盤 鍵 ← / → 切換</span>
+</div>
+
+<script>
+    let currentSlide = 1;
+    const totalSlides = 14;
+
+    function showSlide(index) {
+        if (index < 1 || index > totalSlides) return;
+        
+        document.querySelectorAll('.slide').forEach(slide => {
+            slide.classList.remove('active');
+        });
+
+        const targetSlide = document.getElementById(`slide-${index}`);
+        if (targetSlide) {
+            targetSlide.classList.add('active');
+            currentSlide = index;
+            const progressPct = ((currentSlide - 1) / (totalSlides - 1)) * 100;
+            document.getElementById('global-progress').style.width = `${progressPct === 0 ? 0.6 : progressPct}%`;
+            document.getElementById('slide-indicator').innerText = `${currentSlide} / ${totalSlides}`;
+        }
+    }
+
+    function nextSlide() {
+        if (currentSlide < totalSlides) {
+            showSlide(currentSlide + 1);
+        }
+    }
+
+    function prevSlide() {
+        if (currentSlide > 1) {
+            showSlide(currentSlide - 1);
+        }
+    }
+
+    // Slide 5: 三大推薦演算法卡片切換
+    const engines = [
+        {
+            title: "客戶聚類 K-Means",
+            desc: "透過標準化與距離度量，識別黃金與小資客群，建立基礎標籤。"
+        },
+        {
+            title: "相似推薦 Cosine",
+            desc: "修正僅看菜色的盲點，加入地理與價位特徵，精準推薦合拍餐廳。"
+        },
+        {
+            title: "關聯分析 Apriori",
+            desc: "深入挖掘隱藏關聯（如下午茶配炸物），驚喜跨界打破資訊繭房。"
+        }
+    ];
+
+    function switchEngineDetail(index) {
+        for (let i = 0; i < 3; i++) {
+            const card = document.getElementById(`engine-card-${i}`);
+            if (i === index) {
+                card.className = "border-4 border-brand-blue/30 rounded-3xl p-8 bg-blue-50/30 flex flex-col justify-between h-[360px] text-left transition-all hover:-translate-y-2 shadow-sm cursor-pointer";
+            } else {
+                card.className = "border-2 border-slate-100 rounded-3xl p-8 bg-slate-50/50 flex flex-col justify-between h-[360px] text-left transition-all hover:-translate-y-2 shadow-sm cursor-pointer";
+            }
+        }
+        document.getElementById('engine-detail-title').innerText = engines[index].title;
+        document.getElementById('engine-detail-desc').innerText = engines[index].desc;
+    }
+
+    // Slide 7: 24小時趨勢圖動態探索
+    const hourData = {
+        0: { badge: "深夜非尖峰期", orders: "~120 筆", logistics: "平穩，運力充足", strategy: "主推深夜宵夜、精選串燒，降低深夜長距離派單概率。" },
+        1: { badge: "宵夜尾聲", orders: "~140 筆", logistics: "充足，閒置運能高", strategy: "對沉睡會員進行輕度折價提醒，主打夜貓深夜組合。" },
+        2: { badge: "深夜運維期", orders: "~120 筆", logistics: "空閒", strategy: "平台常規維護，主推少數全天候營業速食冷啟動店家。" },
+        11: { badge: "午餐預備發熱期", orders: "~38 筆", logistics: "運力陸續上線", strategy: "對寫字樓白領推送午餐預訂免運券，減緩 12 點配送壓力。" },
+        12: { badge: "午餐超極限高峰", orders: "~680 筆", logistics: "極高，需動態配單", strategy: "優先推距離近的港式茶餐廳，啟用一鍵下單，減輕調度難度。" },
+        13: { badge: "午餐餘溫期", orders: "~610 筆", logistics: "平穩下調", strategy: "針對非辦公區域主推下午餐，適度放寬運送範疇限制。" },
+        14: { badge: "非尖峰低谷", orders: "~230 筆", logistics: "閒置嚴重，運力溢出", strategy: "啟動下午茶計畫！主推甜點冷飲組合，啟動反補貼機制。" },
+        15: { badge: "甜點小反峰", orders: "~35 筆", logistics: "平穩", strategy: "針對 Gold 高階會員推送茶點，活化非尖峰期運能。" },
+        16: { badge: "晚餐預熱", orders: "~35 筆", logistics: "平穩", strategy: "準備晚餐配送，重啟地理特徵權重過濾。" },
+        17: { badge: "晚餐前端高峰", orders: "~240 筆", logistics: "上升中", strategy: "啟動家庭客群多人分享餐，推薦中高客單價宴席插卡。" },
+        18: { badge: "晚餐次峰", orders: "~470 筆", logistics: "高度吃緊", strategy: "著重住宅熱區外送資源對接，優先排定大份量套餐。" },
+        19: { badge: "晚餐最高極峰", orders: "~730 筆", logistics: "超負載爆棚", strategy: "針對大額 Outliers 金主客群極速投遞，搭配動態費率機制。" },
+        20: { badge: "晚餐收尾", orders: "~690 筆", logistics: "吃緊中", strategy: "放鬆物流極限，推薦跨店 Apriori 驚喜關聯之小菜搭配。" },
+        21: { badge: "夜歸點餐高峰", orders: "~240 筆", logistics: "回落", strategy: "推播加班夜歸、高熱量減壓速食、韓式炸雞等推薦。" },
+        22: { badge: "夜生活剛需", orders: "~180 筆", logistics: "充足", strategy: "主推港式甜品、糖水鋪，主打精緻個人夜貓甜品卡片。" },
+        23: { badge: "深夜來臨", orders: "~135 筆", logistics: "平穩", strategy: "轉入深夜宵夜邏輯，過濾無法提供深夜物流之偏遠餐廳。" }
+    };
+
+    const plotCoordinates = {
+        0: { x: 40, y: 110 }, 1: { x: 70, y: 105 }, 2: { x: 100, y: 107 },
+        11: { x: 225, y: 120 }, 12: { x: 240, y: 30 }, 13: { x: 260, y: 40 },
+        14: { x: 280, y: 95 }, 15: { x: 300, y: 120 }, 16: { x: 315, y: 120 },
+        17: { x: 330, y: 90 }, 18: { x: 340, y: 55 }, 19: { x: 350, y: 20 },
+        20: { x: 370, y: 30 }, 21: { x: 390, y: 95 }, 22: { x: 410, y: 100 }, 23: { x: 440, y: 110 }
+    };
+
+    function updateHourExplorer(val) {
+        let hour = parseInt(val);
+        const availableHours = Object.keys(hourData).map(Number);
+        if (!availableHours.includes(hour)) {
+            hour = availableHours.reduce((prev, curr) => Math.abs(curr - hour) < Math.abs(prev - hour) ? curr : prev);
+        }
+
+        document.getElementById('interactive-hour').innerText = `${hour < 10 ? '0' + hour : hour}:00`;
+        document.getElementById('interactive-status-badge').innerText = hourData[hour].badge;
+        document.getElementById('interactive-orders').innerText = hourData[hour].orders;
+        document.getElementById('interactive-logistics').innerText = hourData[hour].logistics;
+        document.getElementById('interactive-strategy').innerText = hourData[hour].strategy;
+
+        const logisticsText = document.getElementById('interactive-logistics');
+        if (hour === 12 || hour === 19 || hour === 20) {
+            logisticsText.className = "text-red-600 font-black";
+            document.getElementById('interactive-status-badge').className = "bg-red-100 text-red-700 px-3 py-1 rounded-lg font-black text-sm";
+        } else if (hour === 14 || hour === 15) {
+            logisticsText.className = "text-emerald-600 font-black";
+            document.getElementById('interactive-status-badge').className = "bg-emerald-100 text-emerald-700 px-3 py-1 rounded-lg font-black text-sm";
+        } else {
+            logisticsText.className = "text-slate-800 font-black";
+            document.getElementById('interactive-status-badge').className = "bg-slate-200 text-slate-700 px-3 py-1 rounded-lg font-black text-sm";
+        }
+
+        const point = document.getElementById('interactive-point');
+        if (plotCoordinates[hour]) {
+            point.setAttribute('cx', plotCoordinates[hour].x);
+            point.setAttribute('cy', plotCoordinates[hour].y);
+        }
+    }
+
+    // Slide 8: 在地化熱度矩陣 hover
+    function hoverHeat(district, cuisine, value) {
+        document.getElementById('heat-district').innerText = district;
+        document.getElementById('heat-cuisine').innerText = cuisine;
+        document.getElementById('heat-value').innerText = value;
+    }
+
+    // 事件監聽與縮放
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'ArrowRight' || event.key === ' ') {
+            nextSlide();
+        } else if (event.key === 'ArrowLeft') {
+            prevSlide();
+        }
+    });
+
+    let touchstartX = 0; let touchendX = 0;
+    document.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; });
+    document.addEventListener('touchend', e => {
+        touchendX = e.changedTouches[0].screenX;
+        if (touchendX < touchstartX - 50) nextSlide();
+        if (touchendX > touchstartX + 50) prevSlide();
+    });
+
+    function adjustScale() {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        // 放大基準尺寸為 1440x810
+        const scale = Math.min(width / 1500, height / 900);
+        const activeScale = scale < 1 ? scale : 1;
+        document.querySelectorAll('.slide').forEach(slide => {
+            slide.style.transform = `translate(-50%, -50%) scale(${activeScale})`;
+        });
+    }
+
+    window.addEventListener('resize', adjustScale);
+
+    window.onload = function() {
+        adjustScale();
+        showSlide(1);
+        updateHourExplorer(12);
+    }
+</script>
+
+</body>
+</html>
